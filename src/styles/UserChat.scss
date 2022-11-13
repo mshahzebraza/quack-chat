@@ -1,0 +1,31 @@
+.userChat {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #2f2d52;
+  }
+
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .userChatInfo {
+    h4 {
+      line-height: 1.2;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+    p {
+      font-size: 0.8rem;
+      color: lightgray;
+    }
+  }
+}
