@@ -1,0 +1,59 @@
+@import url(https://fonts.googleapis.com/css?family=Arvo:regular,italic,700,700italic);
+/*======================
+    404 page
+=======================*/
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  font-family: "Arvo", "Inter", serif;
+}
+.mediaBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  h1 {
+    z-index: 1;
+    font-size: 5rem;
+    font-weight: 300;
+    line-height: normal;
+  }
+  .media {
+    margin-top: -3rem;
+    height: min(60vh, 15rem);
+    height: 50vh;
+    width: 100vw;
+    max-width: 100%;
+    background-image: url("../assets/404.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
+
+.contentBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  h3 {
+    font-size: 30px;
+    font-weight: 400;
+  }
+  p {
+    font-size: 0.9rem;
+  }
+}
+
+.toHome {
+  color: #fff !important;
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: 10px 20px;
+  background: #39ac31;
+  margin: 10px 0;
+  display: inline-block;
+}
