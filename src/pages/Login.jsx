@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import "./Forms.scss";
+import "../styles/Forms.scss";
 
 const Login = () => {
   const [err, setErr] = useState(false);
@@ -9,7 +9,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Submitted! 👍", e.target);
-
   };
   return (
     <div className="formContainer">

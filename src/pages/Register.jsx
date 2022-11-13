@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import AddAvatarImageURL from "../assets/addAvatar.png";
-import "./Forms.scss";
+import "../styles/Forms.scss";
 
 const Register = () => {
   const [err, setErr] = useState(false);

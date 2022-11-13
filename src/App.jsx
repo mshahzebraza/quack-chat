@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import Error from "./pages/Error";
 
 const ProtectedRoute = ({ children }) => {
-  const authenticated = false; // TODO: temporarily
+  const authenticated = true; // TODO: temporarily
   if (!authenticated) {
     return <Navigate to="/login" />;
   }
