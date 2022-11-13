@@ -2,13 +2,13 @@ import React from "react";
 
 import Input from "./Input";
 import Messages from "./Messages";
-
+import ChatHeader from "./ChatHeader";
 import "../styles/ChatWindow.scss";
 
 const ChatWindow = () => {
   return (
     <div className="chatWindow">
-      ChatWindow
+      <ChatHeader userName={"Shahzeb"} />
       <Messages />
       <Input />
     </div>
