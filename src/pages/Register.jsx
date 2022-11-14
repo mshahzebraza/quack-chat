@@ -1,11 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { registerFirebaseUser } from "../../firebase/auth";
-
 import AddAvatarImageURL from "../assets/addAvatar.png";
+import { registerFirebaseUser } from "../../firebase/auth";
+import { uploadResumableData } from "../../firebase/storage";
 import "../styles/Forms.scss";
 
 const Register = () => {
@@ -19,8 +16,12 @@ const Register = () => {
     const [userName, email, password, avatar] = destructureFormData(e.target);
     // register user
     const registeredUser = await registerFirebaseUser(email, password);
+
     // update user-profile: while registration, only email & password is accepted. Therefore, remaining fields are updated later
-    //
+    const downloadURL = await uploadResumableData(
+      avatar,
+      createUploadPath(userName)
+    );
   };
 
   return (
@@ -51,6 +52,15 @@ const Register = () => {
 
 export default Register;
 
+function createUploadPath(userName) {
+  const date = new Date().getTime();
+  return `${userName}_${date}`;
+}
+
 function destructureFormData(formElem) {
-  return [0, 1, 2, 3].map((valID) => formElem[valID].value);
+  return [0, 1, 2, 3].map((valID) => {
+    const input = formElem[valID];
+    if (input.type === "file") return input.files[0];
+    return formElem[valID].value;
+  });
 }

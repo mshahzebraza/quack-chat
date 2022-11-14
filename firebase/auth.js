@@ -1,6 +1,6 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-
-const firebaseAuth = getAuth();
+import { createUserWithEmailAndPassword } from "firebase/auth";
+// creating the firebaseAuth here will throw errors. reason not know
+import { firebaseAuth } from "./index.js";
 
 export const registerFirebaseUser = async (
   email,
