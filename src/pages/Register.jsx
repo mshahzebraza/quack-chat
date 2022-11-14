@@ -1,5 +1,9 @@
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase";
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { registerFirebaseUser } from "../../firebase/auth";
 
 import AddAvatarImageURL from "../assets/addAvatar.png";
 import "../styles/Forms.scss";
@@ -11,7 +15,12 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted! 👍", e.target);
+    // transform data
+    const [userName, email, password, avatar] = destructureFormData(e.target);
+    // register user
+    const registeredUser = await registerFirebaseUser(email, password);
+    // update user-profile: while registration, only email & password is accepted. Therefore, remaining fields are updated later
+    //
   };
 
   return (
@@ -41,3 +50,7 @@ const Register = () => {
 };
 
 export default Register;
+
+function destructureFormData(formElem) {
+  return [0, 1, 2, 3].map((valID) => formElem[valID].value);
+}
