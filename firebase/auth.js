@@ -1,17 +1,24 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 // creating the firebaseAuth here will throw errors. reason not know
 import { firebaseAuth } from "./index.js";
+
+/**
+ * Create a user based on email/password entered and handle the success/failure scenarios
+ * @param  {string} email
+ * @param  {string} password
+ * @param  {Function?} onSuccess
+ * @param  {Function?} onError
+ */
 
 export const registerFirebaseUser = async (
   email,
   password,
   onSuccess,
-  onError,
-  auth = firebaseAuth
+  onError
 ) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
-      auth, // will automatically default to firebaseAuth
+      firebaseAuth, // will automatically default to firebaseAuth
       email,
       password
     );
@@ -32,7 +39,28 @@ export const registerFirebaseUser = async (
     } else {
       const errorCode = error.code;
       const errorMessage = error.message;
-      throw new Error(`${errorCode}: ${errorMessage}`);
+      console.log("🔴 Error!: ", `${errorCode}: ${errorMessage}`);
+      throw new Error(`❌ Error updating userProfile`);
     }
+  }
+};
+
+/**
+ * update registered user photoURL
+ * @param  {Object} afterCompletionParams - collection of parameters needed to call the afterCompletion callback (runs after upload task)
+ */
+export const updateUserProfile = async (afterCompletionParams) => {
+  const { registeredUser, userName, downloadURL } = afterCompletionParams;
+  console.log("afterCompletionParams: ", afterCompletionParams);
+  try {
+    await updateProfile(registeredUser, {
+      displayName: userName,
+      photoURL: downloadURL,
+    });
+    console.log("✅ Profile Updated!");
+  } catch (error) {
+    console.log("🔴 Error!: ", error);
+    // setError({state:true,code:error.code,message:error.message})
+    throw new Error("❌ Error updating userProfile");
   }
 };
