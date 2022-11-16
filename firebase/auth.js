@@ -1,6 +1,15 @@
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword, // to sign up
+  updateProfile, // to update user's info beyond than signup-only info
+  signInWithEmailAndPassword,
+  signOut, // to track the logging in / logging out
+} from "firebase/auth";
 // creating the firebaseAuth here will throw errors. reason not know
 import { firebaseAuth } from "./index.js";
+import { atom } from "jotai";
+
+// Creating a new Authentication Atom State
+export const authUserAtom = atom(true);
 
 /**
  * Create a user based on email/password entered and handle the success/failure scenarios
@@ -64,3 +73,37 @@ export const updateUserProfile = async (afterCompletionParams) => {
     throw new Error("❌ Error updating userProfile");
   }
 };
+
+/**
+ * Logs the user out of firebase
+ */
+export async function logOutUser() {
+  try {
+    await signOut(firebaseAuth);
+    console.log("✅ User Logged out!");
+  } catch (error) {
+    console.error(error.message);
+    throw new Error("🔴 Error logging out the user!");
+  }
+}
+
+/**
+ * Log the user into firebase authentication
+ * @param {string} email email input from login form
+ * @param {string} password password input from login form
+ */
+export async function logInUser(email, password) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      firebaseAuth,
+      email,
+      password
+    );
+    // Signed in
+    const user = userCredential.user;
+    console.log("✅User signed in!", user);
+  } catch (error) {
+    console.error(error.message);
+    throw new Error("🔴 Error logging in the user!");
+  }
+}

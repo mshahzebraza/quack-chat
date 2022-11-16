@@ -83,6 +83,6 @@ function onCompletion(taskSnapShot, afterCompletion, afterCompletionParams) {
 
     // execute the afterCompletion callback and append downloadURL to its arguments
     afterCompletionParams.downloadURL = downloadURL;
-    afterCompletion(afterCompletionParams);
+    await afterCompletion(afterCompletionParams);
   };
 }
