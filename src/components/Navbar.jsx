@@ -14,7 +14,7 @@ const Navbar = () => {
       <span className="logo">React Chat App</span>
       <div className="user">
         <img src={authUser?.photoURL || fallbackImageURL} alt="User's Image" />
-        <span>{authUser.displayName || "Dummy"}</span>
+        <span>{authUser.displayName || "unauthorized"}</span>
         <button onClick={() => logOutUser()}>logout</button>
       </div>
     </div>

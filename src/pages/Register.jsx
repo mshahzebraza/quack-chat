@@ -23,23 +23,31 @@ const Register = () => {
      * 5. create an empty chat collection against the new user
      * 6. navigate to home
      */
+    setLoading(true);
     e.preventDefault();
     // transform data
     const [userName, email, password, avatar] = destructureFormData(e.target);
-    // Task 1: register user
-    const registeredUser = await registerFirebaseUser(email, password);
+    try {
+      // Task 1: register user
+      const registeredUser = await registerFirebaseUser(email, password);
 
-    // Task 2-5: update user-profile: while registration, only email & password is accepted. Therefore, remaining fields are updated later
-    const uploadPath = createUploadPath("userImages/" + userName);
-    const afterCompletionParams = { registeredUser, userName };
-    await uploadResumableData(
-      avatar,
-      uploadPath,
-      afterCompletion,
-      afterCompletionParams
-    );
-    // navigate back to home
-    navigate("/");
+      // Task 2-5: update user-profile: while registration, only email & password is accepted. Therefore, remaining fields are updated later
+      const uploadPath = createUploadPath("userImages/" + userName);
+      const afterCompletionParams = { registeredUser, userName };
+      await uploadResumableData(
+        avatar,
+        uploadPath,
+        afterCompletion,
+        afterCompletionParams
+      );
+      // navigate back to home
+      navigate("/");
+    } catch (error) {
+      console.log(error.message);
+      setErr(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,7 +66,7 @@ const Register = () => {
           </label>
           <button disabled={loading}>Sign up</button>
           {loading && "Uploading and compressing the image please wait..."}
-          {err && <span>Something went wrong</span>}
+          {err && <span>{err}</span>}
         </form>
         <p>
           You do have an account? <Link to="/login">Login</Link>

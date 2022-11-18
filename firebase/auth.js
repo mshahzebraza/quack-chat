@@ -9,7 +9,7 @@ import { firebaseAuth } from "./index.js";
 import { atom } from "jotai";
 
 // Creating a new Authentication Atom State
-export const authUserAtom = atom(true);
+export const authUserAtom = atom(false);
 
 /**
  * Create a user based on email/password entered and handle the success/failure scenarios
@@ -34,12 +34,8 @@ export const registerFirebaseUser = async (
     // Signed in
     const user = userCredential.user;
     // run the default onSuccess if onSuccess is not defined
-    if (!!onSuccess) {
-      onSuccess(user);
-    } else {
-      console.log("👍 New User Created: ", user);
-      return user;
-    }
+    console.log("👍 New User Created! Email: ", user.email);
+    return user;
     // ...
   } catch (error) {
     // run the default onError if onError is not defined
@@ -49,7 +45,7 @@ export const registerFirebaseUser = async (
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log("🔴 Error!: ", `${errorCode}: ${errorMessage}`);
-      throw new Error(`❌ Error updating userProfile`);
+      throw new Error(`❌ Error creating User Account`);
     }
   }
 };
@@ -70,7 +66,7 @@ export const updateUserProfile = async (afterCompletionParams) => {
   } catch (error) {
     console.log("🔴 Error!: ", error);
     // setError({state:true,code:error.code,message:error.message})
-    throw new Error("❌ Error updating userProfile");
+    throw new Error("❌ Error updating User Profile");
   }
 };
 

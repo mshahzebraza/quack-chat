@@ -8,7 +8,7 @@ import "../styles/ChatWindow.scss";
 const ChatWindow = () => {
   return (
     <div className="chatWindow">
-      <ChatHeader userName={"Shahzeb"} />
+      <ChatHeader userName={"Unauthorized"} />
       <Messages />
       <Input />
     </div>
