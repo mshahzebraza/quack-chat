@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import { useAtom } from "jotai";
-
-import fallbackImageURL from "../assets/shahzeb.jpg";
-import "../styles/Search.scss";
-import "../styles/UserChat.scss";
 import {
   collection,
   query,
@@ -15,6 +11,10 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
+
+import fallbackImageURL from "../assets/shahzeb.jpg";
+import "../styles/Search.scss";
+import "../styles/UserChat.scss";
 import { firebaseFireStoreDB } from "../../firebase";
 import { authUserAtom } from "../../firebase/auth";
 
