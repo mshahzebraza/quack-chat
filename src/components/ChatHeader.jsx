@@ -1,12 +1,16 @@
 import React from "react";
+import { useAtom } from "jotai";
+
 import CamImageURL from "../assets/cam.png";
 import AddImageURL from "../assets/add.png";
 import MoreImageURL from "../assets/more.png";
 import "../styles/ChatHeader.scss";
-const ChatHeader = ({ userName }) => {
+import { activeChatUserAtom } from "../../firebase/firestore";
+
+const ChatHeader = ({ activeChatUserName = "No User" }) => {
   return (
     <div className="chatHeader">
-      <span>{userName}</span>
+      <span>{activeChatUserName}</span>
       <div className="chatIcons">
         <img src={CamImageURL} alt="Camera Image" />
         <img src={AddImageURL} alt="Add Image" />

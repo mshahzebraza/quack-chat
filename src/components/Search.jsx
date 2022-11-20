@@ -17,6 +17,7 @@ import "../styles/Search.scss";
 import "../styles/UserChat.scss";
 import { firebaseFireStoreDB } from "../../firebase";
 import { authUserAtom } from "../../firebase/auth";
+import { createChatId } from "../lib/helpers";
 
 const Search = () => {
   const [searchUserName, setSearchUsername] = useState("");
@@ -45,6 +46,7 @@ const Search = () => {
         const filteredUsers = matchingUsers.filter(
           (user) => user.uid !== authUser.uid
         );
+
         setUsersMatched(filteredUsers);
       } else {
         setErr("No user found!");
@@ -63,7 +65,7 @@ const Search = () => {
       uid: uidM,
       photoURL: photoM,
     } = usersMatched[matchIdx];
-    const comboId = uidA > uidM ? uidA + uidM : uidM + uidA;
+    const comboId = createChatId(uidA, uidM);
     try {
       // Step 1: Check if the ChatGroup exists
       const docSnap = await getDoc(doc(firebaseFireStoreDB, "chats", comboId));
