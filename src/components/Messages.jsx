@@ -31,7 +31,12 @@ const Messages = () => {
     const unsub = onSnapshot(
       doc(firebaseFireStoreDB, "chats", chatId),
       (doc) => {
-        console.log(`Found these chats: `, doc.data());
+        if (doc.exists()) {
+          console.log(`Found this doc: `, doc.data());
+          setMessages(doc.data()?.messages);
+        } else {
+          console.log("No Chat Document exist");
+        }
       }
     );
 
@@ -41,10 +46,11 @@ const Messages = () => {
     };
   }
 
+  // Run the fetchChats as soon as selectedUser Changes
   useEffect(() => {
     // running the fetchChats & returning the cleanup function at the same time
     return fetchChats();
-  }, []);
+  }, [activeChatUser.uid]);
 
   return (
     <div className="messages">
