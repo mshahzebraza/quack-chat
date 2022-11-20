@@ -20,12 +20,14 @@ import { authUserAtom } from "../../firebase/auth";
 
 const Search = () => {
   const [searchUserName, setSearchUsername] = useState("");
-  const [userMatch, setUserMatch] = useState(null);
+  const [usersMatched, setUsersMatched] = useState([]);
   const [err, setErr] = useState(false);
   const [authUser] = useAtom(authUserAtom);
 
   // search the users collection against the document with matching username
   const handleSearch = async (e) => {
+    setErr(false);
+    setUsersMatched(null);
     // Create a reference to the users collection
     const usersRef = collection(firebaseFireStoreDB, "users");
     // Create a filter for the required user
@@ -36,71 +38,66 @@ const Search = () => {
     try {
       // Execute the Query
       const querySnapshot = await getDocs(q);
-      // doc.data() is never undefined for query doc snapshots
-      console.log(querySnapshot);
-
       // Check the results of query for null/empty
-      if (!querySnapshot.size) alert("no user found");
-      querySnapshot.forEach((doc) => {
-        // set the userMatch to the returned document
-        const docRes = doc.data();
-        if (authUser.uid === docRes.uid) {
-          console.error("Found yourself");
-        } else {
-          setUserMatch(doc.data());
-        }
-        console.log(doc.data());
-      });
+      if (querySnapshot.size) {
+        const matchingUsers = querySnapshot.docs.map((doc) => doc.data());
+        // Filter out the logged in user from the search
+        const filteredUsers = matchingUsers.filter(
+          (user) => user.uid !== authUser.uid
+        );
+        setUsersMatched(filteredUsers);
+      } else if (!querySnapshot.size) setErr("No user found!");
     } catch (error) {
-      setErr("🔴 Error occurred during user search");
+      console.error(error);
+      setErr("🔴 Error creating Chat Group/User Info!");
     }
   };
-  const handleSelect = async () => {
+  const handleSelect = async (matchIdx) => {
     // Check the uid of the selected user
-    const { displayName: nameAuth, uid: uidAuth } = authUser;
-    const { displayName: nameMatch, uid: uidMatch } = userMatch;
-
-    console.log("Auth user: ", nameAuth);
-    console.log("Selected user: ", nameMatch);
-    const comboId =
-      uidAuth > uidMatch ? uidAuth + uidMatch : uidMatch + uidAuth;
+    const { displayName: nameA, uid: uidA, photoURL: photoA } = authUser;
+    const {
+      displayName: nameM,
+      uid: uidM,
+      photoURL: photoM,
+    } = usersMatched[matchIdx];
+    const comboId = uidA > uidM ? uidA + uidM : uidM + uidA;
     try {
-      const docRef = doc(firebaseFireStoreDB, "chats", comboId);
-      // Fetch the chatGroup for both users
-      const docSnap = await getDoc(docRef);
-      console.log("docSnap exists? ", docSnap.exists());
+      // Step 1: Check if the ChatGroup exists
+      const docSnap = await getDoc(doc(firebaseFireStoreDB, "chats", comboId));
+
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
+        console.log("Chat Group Already exists", docSnap.data());
       } else {
-        // doc.data() will be undefined in this case
-        console.error("No such document!");
-
-        // Step 1: Create a combined chatGroup for both users in "chat" collection
+        console.log("Chat Group didn't exist! Creating ...");
+        // Step 1-A: Create a combined chatGroup for both users in "chat" collection
         await setDoc(doc(firebaseFireStoreDB, "chats", comboId), {});
-        // Step 2 & 3: Create a the data to show in the recent-chat-list in sidebar, in the "userChats" collection of both users. Each user will have a separate document in userChat collection, and each of the user-document will contain the chatGroup document for each of the people user has talked to
+        console.log("Chat Group Created");
 
-        // Update sender userChats for the receiver
-        await updateDoc(doc(firebaseFireStoreDB, "userChats", authUser.uid), {
+        // Step 1-B: Update sender userChats for the receiver
+        await updateDoc(doc(firebaseFireStoreDB, "userChats", uidA), {
           [comboId + ".userInfo"]: {
-            uid: userMatch.uid,
-            displayName: userMatch.displayName,
-            photoURL: userMatch.photoURL,
+            uid: uidM,
+            displayName: nameM,
+            photoURL: photoM,
           },
           [comboId + ".date"]: serverTimestamp(),
         });
-        // Update receiver userChats for the sender
-        await updateDoc(doc(firebaseFireStoreDB, "userChats", userMatch.uid), {
+        console.log(`User Info created for ${nameM} in ${nameA}'s userChats`);
+
+        // Step 1-C: Update receiver userChats for the sender
+        await updateDoc(doc(firebaseFireStoreDB, "userChats", uidM), {
           [comboId + ".userInfo"]: {
-            uid: authUser.uid,
-            displayName: authUser.displayName,
-            photoURL: authUser.photoURL,
+            uid: uidA,
+            displayName: nameA,
+            photoURL: photoA,
           },
           [comboId + ".date"]: serverTimestamp(),
         });
+        console.log(`User Info created for ${nameA} in ${nameM}'s userChats`);
       }
     } catch (error) {
       console.error(error);
-      console.error("Error while selecting the searched user!");
+      setErr("Error while selecting the searched user!");
     }
   };
 
@@ -126,19 +123,24 @@ const Search = () => {
         />
       </div>
       {/* Search Error */}
-      {err && <span>User not found!</span>}
+      {err && <span className="error">{err}</span>}
       {/* Search Results */}
-      {userMatch && (
-        <div className="userChat" onClick={handleSelect}>
-          <img
-            src={userMatch?.photoURL || fallbackImageURL}
-            alt="Contact's Image"
-          />
-          <div className="userChatInfo">
-            <span>{userMatch?.displayName}</span>
+      {!!usersMatched?.length &&
+        usersMatched.map((matchUser, matchIdx) => (
+          <div
+            className="userChat"
+            onClick={() => handleSelect(matchIdx)}
+            key={"userChat-" + matchIdx}
+          >
+            <img
+              src={matchUser?.photoURL || fallbackImageURL}
+              alt="Contact's Image"
+            />
+            <div className="userChatInfo">
+              <span>{matchUser?.displayName}</span>
+            </div>
           </div>
-        </div>
-      )}
+        ))}
     </div>
   );
 };
