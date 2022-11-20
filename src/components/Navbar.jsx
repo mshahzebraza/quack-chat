@@ -4,11 +4,10 @@ import "../styles/Navbar.scss";
 import { useAtom } from "jotai";
 
 /**
- * The top toola
+ * The top
  */
 const Navbar = () => {
   const [authUser] = useAtom(authUserAtom);
-  console.log("authUser: ", authUser);
   return (
     <div className="navbar">
       <span className="logo">React Chat App</span>
