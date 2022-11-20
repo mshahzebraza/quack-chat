@@ -46,12 +46,15 @@ const Search = () => {
           (user) => user.uid !== authUser.uid
         );
         setUsersMatched(filteredUsers);
-      } else if (!querySnapshot.size) setErr("No user found!");
+      } else {
+        setErr("No user found!");
+      }
     } catch (error) {
       console.error(error);
       setErr("🔴 Error creating Chat Group/User Info!");
     }
   };
+  // Select a user from the list of user search results
   const handleSelect = async (matchIdx) => {
     // Check the uid of the selected user
     const { displayName: nameA, uid: uidA, photoURL: photoA } = authUser;
@@ -95,16 +98,23 @@ const Search = () => {
         });
         console.log(`User Info created for ${nameA} in ${nameM}'s userChats`);
       }
+      // Step 2: Reset the search bar again
+      setUsersMatched(null);
     } catch (error) {
       console.error(error);
       setErr("Error while selecting the searched user!");
     }
   };
 
+  // Trigger an api request if "Enter" key is pressed
   const handleKey = (e) => {
-    if (!searchUserName) console.log("Reset the search Result");
+    if (!searchUserName && !!usersMatched) {
+      console.log("Reset the search Result!");
+      setUsersMatched(null);
+    }
     if (["Enter", "NumpadEnter"].includes(e.code)) {
       handleSearch();
+      setSearchUsername("");
       return null;
     }
     // search for user
@@ -127,22 +137,26 @@ const Search = () => {
       {/* Search Results */}
       {!!usersMatched?.length &&
         usersMatched.map((matchUser, matchIdx) => (
-          <div
-            className="userChat"
-            onClick={() => handleSelect(matchIdx)}
+          <SearchedUser
             key={"userChat-" + matchIdx}
-          >
-            <img
-              src={matchUser?.photoURL || fallbackImageURL}
-              alt="Contact's Image"
-            />
-            <div className="userChatInfo">
-              <span>{matchUser?.displayName}</span>
-            </div>
-          </div>
+            click={() => handleSelect(matchIdx)}
+            data={{ ...matchUser }}
+          />
         ))}
     </div>
   );
 };
 
 export default Search;
+
+function SearchedUser({ click, data }) {
+  const { photoURL = fallbackImageURL, displayName = "undefined" } = data;
+  return (
+    <div className="userChat" onClick={click}>
+      <img src={photoURL} alt="Searched User's Image" />
+      <div className="userChatInfo">
+        <span>{displayName}</span>
+      </div>
+    </div>
+  );
+}
