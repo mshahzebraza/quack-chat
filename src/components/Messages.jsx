@@ -21,9 +21,8 @@ import { firebaseFireStoreDB } from "../../firebase";
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);
-  const [authUser, setAuthUser] = useAtom(authUserAtom);
-  const [activeChatUser, setActiveChatUser] = useAtom(activeChatUserAtom);
-  console.log("messages: ", messages);
+  const [authUser] = useAtom(authUserAtom);
+  const [activeChatUser] = useAtom(activeChatUserAtom);
 
   const chatId = createChatId(activeChatUser?.uid, authUser?.uid);
 

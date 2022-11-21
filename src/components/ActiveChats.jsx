@@ -32,11 +32,11 @@ const ActiveChats = () => {
           }));
 
           // Sort by date - descending (latest first)
-          const activeChatsSorted = activeChats.sort((cur, next) => {
-            return next.date.seconds - cur.date.seconds;
+          const activeChatsSorted = activeChats.sort((a, b) => {
+            const fallbackA = a.date?.seconds;
+            const fallbackB = b.date?.seconds || 0;
+            return fallbackB - fallbackA; // a - b: asc, b -a: desc
           });
-          console.log("activeChatsSorted: ", activeChatsSorted);
-
           setChats(activeChatsSorted);
         } else {
           console.error("No Active Chats Document Exists");
@@ -60,11 +60,7 @@ const ActiveChats = () => {
    */
   const handleSelect = (selectedUserInfo) => {
     // Change the Active Chat User
-    console.log(
-      "Selected Active Chat User: ",
-      selectedUserInfo.displayName,
-      selectedUserInfo
-    );
+    console.log("Selected Active Chat User: ", selectedUserInfo.displayName);
     setActiveChatUser(selectedUserInfo);
   };
 
@@ -72,7 +68,6 @@ const ActiveChats = () => {
     <div className="chats">
       {chats.map((chat) => {
         const { chatId, userInfo, date, lastMessage } = chat;
-        console.log("individual chat: ", chat);
         return (
           <UserChat
             key={chatId}

@@ -15,15 +15,7 @@ const Message = ({ message }) => {
   const [activeChatUser] = useAtom(activeChatUserAtom);
   const senderImage = getSenderImage(senderId, authUser, activeChatUser);
 
-  // const isOwner = Math.floor(Math.random() * 10) % 2 === 0; // generates a random boolean
   const isOwner = senderId === authUser.uid; // generates a random boolean
-  console.log("");
-  // console.log("activeChatUser uid: ", activeChatUser.uid);
-  // console.log("isOwner: ", isOwner);
-  console.log("authUser uid: ", authUser.uid);
-  console.log("message sender id: ", message.senderId);
-  console.log("isSame: ", senderId === authUser.uid);
-  console.log("----");
 
   return (
     <div className={`message ${isOwner && "owner"}`}>
