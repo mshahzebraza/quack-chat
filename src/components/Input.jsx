@@ -42,28 +42,24 @@ const Input = () => {
         uploadTask.on(
           "state_changed",
 
-          whileInProgress(),
-          onError(),
-          () => {
+          whileInProgress,
+          onError,
+          async () => {
             // Handle successful uploads on complete
             // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-            getDownloadURL(uploadTask.snapshot.ref).then(
-              async (downloadURL) => {
-                console.log("Image File uploaded at", downloadURL);
-
-                // Upload the message in ChatGroup
-                await updateDoc(doc(firebaseFireStoreDB, "chats", chatId), {
-                  messages: arrayUnion({
-                    id: uuid(),
-                    text,
-                    uid: activeChatUser.uid,
-                    date: Timestamp.now(),
-                    img: downloadURL,
-                  }),
-                });
-                console.log("Updated the message with image");
-              }
-            );
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log("✅ Image File uploaded at: ", downloadURL);
+            // Upload the message in ChatGroup
+            await updateDoc(doc(firebaseFireStoreDB, "chats", chatId), {
+              messages: arrayUnion({
+                id: uuid(),
+                text,
+                uid: authUser.uid,
+                date: Timestamp.now(),
+                img: downloadURL,
+              }),
+            });
+            console.log("Updated the message with image");
           }
         );
       } else if (!img) {
@@ -72,7 +68,7 @@ const Input = () => {
           messages: arrayUnion({
             id: uuid(),
             text,
-            uid: activeChatUser.uid,
+            uid: authUser.uid,
             date: Timestamp.now(),
           }),
         });

@@ -72,10 +72,6 @@ function onError(error) {
  */
 function onCompletion(taskSnapshot, afterCompletion, afterCompletionParams) {
   return async function () {
-    console.log(
-      "actually running onCompletion with taskSnapshot ref: ",
-      taskSnapshot?.ref
-    );
     // Get the downloadable URL of the file
     const downloadURL = await getDownloadURL(taskSnapshot?.ref);
     console.log("✅ File Uploaded Successfully! Download at: ", downloadURL);
