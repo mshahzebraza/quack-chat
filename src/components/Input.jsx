@@ -14,8 +14,8 @@ import ImgImageURL from "../assets/img.png";
 import AttachImageURL from "../assets/attach.png";
 import "../styles/Input.scss";
 import { firebaseFireStoreDB, firebaseStorage } from "../../firebase/index.js";
-import { authUserAtom } from "../../firebase/auth";
-import { activeChatUserAtom } from "../../firebase/firestore";
+import { authUserAtom } from "../App";
+import { activeChatUserAtom } from "../App";
 import { createChatId } from "../lib/helpers";
 
 const Input = () => {

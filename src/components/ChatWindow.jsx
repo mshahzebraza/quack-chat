@@ -5,7 +5,8 @@ import Input from "./Input";
 import Messages from "./Messages";
 import ChatHeader from "./ChatHeader";
 import "../styles/ChatWindow.scss";
-import { activeChatUserAtom } from "../../firebase/firestore";
+import "../styles/BlankChatWindow.scss";
+import { activeChatUserAtom } from "../App";
 
 const ChatWindow = () => {
   const [activeChatUser] = useAtom(activeChatUserAtom);
@@ -25,6 +26,11 @@ const ChatWindow = () => {
 };
 
 export default ChatWindow;
+
 function BlankChat() {
-  return <div>"Select a User"</div>;
+  return (
+    <div className="blankWindow">
+      <h1>Choose a Chat to start conversation!</h1>
+    </div>
+  );
 }

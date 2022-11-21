@@ -4,9 +4,9 @@ import { doc, onSnapshot } from "firebase/firestore";
 
 import fallbackImageURL from "../assets/shahzeb.jpg";
 import "../styles/UserChat.scss";
-import { authUserAtom } from "../../firebase/auth";
+import { authUserAtom } from "../App";
 import { firebaseFireStoreDB } from "../../firebase";
-import { activeChatUserAtom } from "../../firebase/firestore";
+import { activeChatUserAtom } from "../App";
 
 const ActiveChats = () => {
   const [chats, setChats] = useState([]);

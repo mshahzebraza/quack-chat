@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
-import { activeChatUserAtom } from "../../firebase/firestore";
-import { authUserAtom } from "../../firebase/auth";
+import { activeChatUserAtom } from "../App";
+import { authUserAtom } from "../App";
 import "../styles/Message.scss";
 
 const Message = ({ message }) => {

@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import {
-  collection,
-  query,
-  where,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { createChatId } from "../lib/helpers";
 import Message from "./Message";
 import "../styles/Messages.scss";
-import { authUserAtom } from "../../firebase/auth";
-import { activeChatUserAtom } from "../../firebase/firestore";
+import { authUserAtom } from "../App";
+import { activeChatUserAtom } from "../App";
 import { firebaseFireStoreDB } from "../../firebase";
 
 const Messages = () => {

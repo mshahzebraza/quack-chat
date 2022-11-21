@@ -16,7 +16,7 @@ import fallbackImageURL from "../assets/shahzeb.jpg";
 import "../styles/Search.scss";
 import "../styles/UserChat.scss";
 import { firebaseFireStoreDB } from "../../firebase";
-import { authUserAtom } from "../../firebase/auth";
+import { authUserAtom } from "../App";
 import { createChatId } from "../lib/helpers";
 
 const Search = () => {

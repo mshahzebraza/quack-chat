@@ -5,7 +5,7 @@ import CamImageURL from "../assets/cam.png";
 import AddImageURL from "../assets/add.png";
 import MoreImageURL from "../assets/more.png";
 import "../styles/ChatHeader.scss";
-import { activeChatUserAtom } from "../../firebase/firestore";
+import { activeChatUserAtom } from "../App";
 
 const ChatHeader = ({ activeChatUserName = "No User" }) => {
   return (

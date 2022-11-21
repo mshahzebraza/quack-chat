@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Forms.scss";
-import { authUserAtom, logInUser } from "../../firebase/auth";
+import { logInUser } from "../../firebase/auth";
+import { authUserAtom } from "../App";
 import { useAtom } from "jotai";
 
 const Login = () => {
