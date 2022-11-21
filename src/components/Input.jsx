@@ -56,7 +56,7 @@ const Input = () => {
                   messages: arrayUnion({
                     id: uuid(),
                     text,
-                    senderId: activeChatUser.uid,
+                    uid: activeChatUser.uid,
                     date: Timestamp.now(),
                     img: downloadURL,
                   }),
@@ -72,7 +72,7 @@ const Input = () => {
           messages: arrayUnion({
             id: uuid(),
             text,
-            senderId: activeChatUser.uid,
+            uid: activeChatUser.uid,
             date: Timestamp.now(),
           }),
         });

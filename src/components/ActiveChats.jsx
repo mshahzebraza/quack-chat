@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import { doc, onSnapshot} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 
 import fallbackImageURL from "../assets/shahzeb.jpg";
 import "../styles/UserChat.scss";
@@ -23,14 +23,22 @@ const ActiveChats = () => {
     const unsub = onSnapshot(
       doc(firebaseFireStoreDB, "userChats", authUser.uid),
       (doc) => {
-        const activeChats = Object.entries(doc.data()).map(
-          ([comboChatId, chatInfo]) => ({
+        if (doc.exists()) {
+          const ChatDocsList = Object.entries(doc.data());
+          // Restructure the results from a Map to an Object
+          const activeChats = ChatDocsList.map(([comboChatId, chatInfo]) => ({
             ...chatInfo,
             chatId: comboChatId,
-          })
-        );
-        console.log(`Found active chats: `, activeChats);
-        setChats(activeChats);
+          }));
+          // Sort by date - descending (latest first)
+          const activeChatsSorted = activeChats.sort((cur, next) => {
+            return next.date.seconds - cur.date.seconds;
+          });
+
+          setChats(activeChatsSorted);
+        } else {
+          console.error("No Active Chats Document Exists");
+        }
       }
     );
 
@@ -42,7 +50,7 @@ const ActiveChats = () => {
 
   useEffect(() => {
     if (authUser?.uid) return getChats();
-  }, []);
+  }, [authUser?.uid]);
 
   /**
    * Selects one of the Active User Chats with the selectedUserInfo to update the "ChatWindow"

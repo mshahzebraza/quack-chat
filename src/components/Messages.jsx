@@ -20,9 +20,10 @@ import { activeChatUserAtom } from "../../firebase/firestore";
 import { firebaseFireStoreDB } from "../../firebase";
 
 const Messages = () => {
-  const [messages, setMessages] = useState(Array(50).fill({}));
+  const [messages, setMessages] = useState([]);
   const [authUser, setAuthUser] = useAtom(authUserAtom);
   const [activeChatUser, setActiveChatUser] = useAtom(activeChatUserAtom);
+  console.log("messages: ", messages);
 
   const chatId = createChatId(activeChatUser?.uid, authUser?.uid);
 
@@ -54,8 +55,8 @@ const Messages = () => {
 
   return (
     <div className="messages">
-      {messages.map((m, idx) => (
-        <Message message={m} key={m.id || idx} />
+      {messages.map((m = {}, idx) => (
+        <Message message={m} key={m?.id || idx} />
       ))}
     </div>
   );

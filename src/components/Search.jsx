@@ -75,7 +75,9 @@ const Search = () => {
       } else {
         console.log("Chat Group didn't exist! Creating ...");
         // Step 1-A: Create a combined chatGroup for both users in "chat" collection
-        await setDoc(doc(firebaseFireStoreDB, "chats", comboId), {});
+        await setDoc(doc(firebaseFireStoreDB, "chats", comboId), {
+          messages: [],
+        });
         console.log("Chat Group Created");
 
         // Step 1-B: Update sender userChats for the receiver
