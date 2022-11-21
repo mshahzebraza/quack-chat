@@ -30,10 +30,12 @@ const ActiveChats = () => {
             ...chatInfo,
             chatId: comboChatId,
           }));
+
           // Sort by date - descending (latest first)
           const activeChatsSorted = activeChats.sort((cur, next) => {
             return next.date.seconds - cur.date.seconds;
           });
+          console.log("activeChatsSorted: ", activeChatsSorted);
 
           setChats(activeChatsSorted);
         } else {
@@ -70,12 +72,13 @@ const ActiveChats = () => {
     <div className="chats">
       {chats.map((chat) => {
         const { chatId, userInfo, date, lastMessage } = chat;
+        console.log("individual chat: ", chat);
         return (
           <UserChat
             key={chatId}
             userInfo={userInfo}
             click={() => handleSelect(userInfo)}
-            lastMessage={lastMessage?.text}
+            lastMessageText={lastMessage?.text}
           />
         );
       })}
@@ -85,7 +88,7 @@ const ActiveChats = () => {
 
 export default ActiveChats;
 
-function UserChat({ userInfo = {}, click, lastMessageText = "Lorem ipsum" }) {
+function UserChat({ userInfo = {}, click, lastMessageText = "No Messages!" }) {
   const { photoURL = fallbackImageURL, displayName = "Dummy" } = userInfo;
   return (
     <div className="userChat" onClick={click}>

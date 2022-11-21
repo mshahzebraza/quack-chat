@@ -78,27 +78,31 @@ const Input = () => {
         });
         console.log("Updated the message");
       }
+
+      // update the last message of user chats for receiver (check for receiver)
+      await updateDoc(
+        doc(firebaseFireStoreDB, "userChats", activeChatUser.uid),
+        {
+          [chatId + ".lastMessage"]: {
+            text,
+          },
+          [chatId + ".date"]: serverTimestamp(),
+        }
+      );
+      // update the last message of user chats for sender
+      await updateDoc(doc(firebaseFireStoreDB, "userChats", authUser.uid), {
+        [chatId + ".lastMessage"]: {
+          text,
+        },
+        [chatId + ".date"]: serverTimestamp(),
+      });
+
       setImg(null);
       setText("");
     } catch (error) {
       console.error(error);
       throw new Error("Error Sending the message");
     }
-
-    // update the last message of user chats for receiver (check for receiver)
-    await updateDoc(doc(firebaseFireStoreDB, "userChats", activeChatUser.uid), {
-      [chatId + ".lastMessage"]: {
-        text,
-      },
-      [chatId + ".date"]: serverTimestamp(),
-    });
-    // update the last message of user chats for sender
-    await updateDoc(doc(firebaseFireStoreDB, "userChats", authUser.uid), {
-      [chatId + ".lastMessage"]: {
-        text,
-      },
-      [chatId + ".date"]: serverTimestamp(),
-    });
 
     console.log("Send Button Clicked", { text, img });
   };
