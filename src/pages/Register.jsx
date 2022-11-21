@@ -33,7 +33,8 @@ const Register = () => {
 
       // Task 2-5: update user-profile: while registration, only email & password is accepted. Therefore, remaining fields are updated later
       const uploadPath = createUploadPath("userImages/" + userName);
-      const afterCompletionParams = { registeredUser, userName };
+      const executeInEnd = () => navigate("/");
+      const afterCompletionParams = { registeredUser, userName, executeInEnd };
       await uploadResumableData(
         avatar,
         uploadPath,
@@ -41,9 +42,8 @@ const Register = () => {
         afterCompletionParams
       );
       // navigate back to home
-      navigate("/");
     } catch (error) {
-      console.log(error.message);
+      console.error(error);
       setErr(error.message);
     } finally {
       setLoading(false);
@@ -99,17 +99,21 @@ function destructureFormData(formElem) {
  * @param {string} afterCompletionParams.userName - name of the user from the form input
  */
 async function afterCompletion(afterCompletionParams) {
-  const { registeredUser, downloadURL, userName } = afterCompletionParams;
+  console.log("running afterCompletion with props: ", afterCompletionParams);
+  const { executeInEnd, ...userInfo } = afterCompletionParams;
+  const { registeredUser, downloadURL, userName } = userInfo;
 
   try {
     // update registered user photoURL & displayName
-    await updateUserProfile(afterCompletionParams);
+    await updateUserProfile(userInfo);
 
     //create user on firestore
     await createUserDoc(registeredUser);
 
     //create empty user chats on firestore
     await createUserChatDoc(registeredUser);
+
+    executeInEnd();
   } catch (error) {
     console.log("🔴 Error!: ", error);
     // setError({state:true,code:error.code,message:error.message})
