@@ -44,6 +44,6 @@ function getSenderImage(senderId, authUser, activeChatUser) {
 }
 
 function getMessageTime(messageTime) {
-  const sentTime = new Date(messageTime).toLocaleDateString();
+  const sentTime = new Date(messageTime * 1000).toLocaleDateString();
   return sentTime;
 }

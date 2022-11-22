@@ -80,7 +80,7 @@ function UserChat({ userInfo = {}, click, lastMessageText = "No Messages!" }) {
   );
 }
 
-function sortAndTransformChats(chatData, sortType = "asc") {
+function sortAndTransformChats(chatData, sortType = "desc") {
   const ChatDocsList = Object.entries(chatData);
   // Restructure the results from a Map to an Object
   const activeChats = ChatDocsList.map(([comboChatId, chatInfo]) => ({
