@@ -9,13 +9,16 @@ import Register from "./pages/Register";
 import Error from "./pages/Error";
 
 import { firebaseAuth } from "../firebase";
-import { authUserAtom } from "../firebase/auth";
+import { atom } from "jotai";
+
+export const activeChatUserAtom = atom(null);
+export const authUserAtom = atom(false);
 
 const ProtectedRoute = ({ children }) => {
   const [authUser] = useAtom(authUserAtom);
   if (!authUser) {
     console.log(
-      `🛑🤚🛑 Protected routes can only be visited by Authenticated Users!`
+      "🛑🤚🛑 Protected routes can only be visited by Authenticated Users!"
     );
     return <Navigate to="/login" />;
   }
@@ -24,6 +27,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   const [authUser, setAuthUser] = useAtom(authUserAtom);
+  // const [authUser, setAuthUser] = useAtom(authUserAtom);
 
   // Sets up an auth-observer as soon as app mounts to track the auth-state in realtime
   useEffect(() => {
@@ -35,6 +39,7 @@ function App() {
     });
     return () => unsub();
   }, []);
+
   return (
     <BrowserRouter>
       <Routes>

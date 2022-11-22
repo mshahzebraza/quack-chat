@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAtom } from "jotai";
 
 import AddAvatarImageURL from "../assets/addAvatar.png";
 import "../styles/Forms.scss";
@@ -7,10 +8,14 @@ import "../styles/Forms.scss";
 import { registerFirebaseUser, updateUserProfile } from "../../firebase/auth";
 import { uploadResumableData } from "../../firebase/storage";
 import { createUserChatDoc, createUserDoc } from "../../firebase/firestore";
+import { activeChatUserAtom } from "../App";
 
 const Register = () => {
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [_, setActiveChatUserAtom] = useAtom(activeChatUserAtom);
+  setActiveChatUserAtom(null);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -33,7 +38,8 @@ const Register = () => {
 
       // Task 2-5: update user-profile: while registration, only email & password is accepted. Therefore, remaining fields are updated later
       const uploadPath = createUploadPath("userImages/" + userName);
-      const afterCompletionParams = { registeredUser, userName };
+      const executeInEnd = () => navigate("/");
+      const afterCompletionParams = { registeredUser, userName, executeInEnd };
       await uploadResumableData(
         avatar,
         uploadPath,
@@ -41,9 +47,8 @@ const Register = () => {
         afterCompletionParams
       );
       // navigate back to home
-      navigate("/");
     } catch (error) {
-      console.log(error.message);
+      console.error(error);
       setErr(error.message);
     } finally {
       setLoading(false);
@@ -66,7 +71,7 @@ const Register = () => {
           </label>
           <button disabled={loading}>Sign up</button>
           {loading && "Uploading and compressing the image please wait..."}
-          {err && <span>{err}</span>}
+          {err && <span className="formError">{err}</span>}
         </form>
         <p>
           You do have an account? <Link to="/login">Login</Link>
@@ -99,17 +104,21 @@ function destructureFormData(formElem) {
  * @param {string} afterCompletionParams.userName - name of the user from the form input
  */
 async function afterCompletion(afterCompletionParams) {
-  const { registeredUser, downloadURL, userName } = afterCompletionParams;
+  console.log("running afterCompletion with props: ", afterCompletionParams);
+  const { executeInEnd, ...userInfo } = afterCompletionParams;
+  const { registeredUser, downloadURL, userName } = userInfo;
 
   try {
     // update registered user photoURL & displayName
-    await updateUserProfile(afterCompletionParams);
+    await updateUserProfile(userInfo);
 
     //create user on firestore
     await createUserDoc(registeredUser);
 
     //create empty user chats on firestore
     await createUserChatDoc(registeredUser);
+
+    executeInEnd();
   } catch (error) {
     console.log("🔴 Error!: ", error);
     // setError({state:true,code:error.code,message:error.message})

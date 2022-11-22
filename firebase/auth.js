@@ -6,10 +6,8 @@ import {
 } from "firebase/auth";
 // creating the firebaseAuth here will throw errors. reason not know
 import { firebaseAuth } from "./index.js";
-import { atom } from "jotai";
 
 // Creating a new Authentication Atom State
-export const authUserAtom = atom(false);
 
 /**
  * Create a user based on email/password entered and handle the success/failure scenarios
@@ -56,7 +54,6 @@ export const registerFirebaseUser = async (
  */
 export const updateUserProfile = async (afterCompletionParams) => {
   const { registeredUser, userName, downloadURL } = afterCompletionParams;
-  console.log("afterCompletionParams: ", afterCompletionParams);
   try {
     await updateProfile(registeredUser, {
       displayName: userName,

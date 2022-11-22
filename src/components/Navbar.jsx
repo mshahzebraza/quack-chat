@@ -1,7 +1,8 @@
-import { authUserAtom, logOutUser } from "../../firebase/auth";
+import { useAtom } from "jotai";
+import { logOutUser } from "../../firebase/auth";
 import fallbackImageURL from "../assets/shahzeb.jpg";
 import "../styles/Navbar.scss";
-import { useAtom } from "jotai";
+import { authUserAtom } from "../App";
 
 /**
  * The top

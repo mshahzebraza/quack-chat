@@ -20,7 +20,6 @@ export const uploadResumableData = async (
   const storageRef = ref(firebaseStorage, uploadDestination);
   // upload the file to storage-reference
   const uploadTask = uploadBytesResumable(storageRef, filePayload);
-
   // Monitor the upload by registering three observers:
   uploadTask.on(
     "state_changed", // 'running' | 'pause'
@@ -29,11 +28,7 @@ export const uploadResumableData = async (
     // 2. Error observer, called on failure
     onError,
     // 3. Completion observer, called on successful completion
-    onCompletion(
-      uploadTask.snapshot.ref,
-      afterCompletion,
-      afterCompletionParams
-    )
+    onCompletion(uploadTask.snapshot, afterCompletion, afterCompletionParams)
   );
 };
 
@@ -75,10 +70,10 @@ function onError(error) {
  * @param  {function} afterCompletion - added feature: function to call on upload completion (custom function can be passed)
  * @param  {object} afterCompletionParams - collection of params to call the afterCompletion callback with
  */
-function onCompletion(taskSnapShot, afterCompletion, afterCompletionParams) {
+function onCompletion(taskSnapshot, afterCompletion, afterCompletionParams) {
   return async function () {
     // Get the downloadable URL of the file
-    const downloadURL = await getDownloadURL(taskSnapShot);
+    const downloadURL = await getDownloadURL(taskSnapshot?.ref);
     console.log("✅ File Uploaded Successfully! Download at: ", downloadURL);
 
     // execute the afterCompletion callback and append downloadURL to its arguments

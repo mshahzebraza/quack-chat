@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import { doc, onSnapshot} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 
 import fallbackImageURL from "../assets/shahzeb.jpg";
 import "../styles/UserChat.scss";
-import { authUserAtom } from "../../firebase/auth";
+import { authUserAtom } from "../App";
 import { firebaseFireStoreDB } from "../../firebase";
-import { activeChatUserAtom } from "../../firebase/firestore";
+import { activeChatUserAtom } from "../App";
 
 const ActiveChats = () => {
   const [chats, setChats] = useState([]);
@@ -23,26 +23,21 @@ const ActiveChats = () => {
     const unsub = onSnapshot(
       doc(firebaseFireStoreDB, "userChats", authUser.uid),
       (doc) => {
-        const activeChats = Object.entries(doc.data()).map(
-          ([comboChatId, chatInfo]) => ({
-            ...chatInfo,
-            chatId: comboChatId,
-          })
-        );
-        console.log(`Found active chats: `, activeChats);
-        setChats(activeChats);
+        if (doc.exists()) {
+          const activeChatsSorted = sortAndTransformChats(doc.data());
+          setChats(activeChatsSorted);
+        } else {
+          console.error("No Active Chats Document Exists");
+        }
       }
     );
 
-    return () => {
-      console.log("Cleanup for Active Chats");
-      return unsub();
-    };
+    return () => unsub();
   }
 
   useEffect(() => {
     if (authUser?.uid) return getChats();
-  }, []);
+  }, [authUser?.uid]);
 
   /**
    * Selects one of the Active User Chats with the selectedUserInfo to update the "ChatWindow"
@@ -50,11 +45,6 @@ const ActiveChats = () => {
    */
   const handleSelect = (selectedUserInfo) => {
     // Change the Active Chat User
-    console.log(
-      "Selected Active Chat User: ",
-      selectedUserInfo.displayName,
-      selectedUserInfo
-    );
     setActiveChatUser(selectedUserInfo);
   };
 
@@ -67,7 +57,7 @@ const ActiveChats = () => {
             key={chatId}
             userInfo={userInfo}
             click={() => handleSelect(userInfo)}
-            lastMessage={lastMessage?.text}
+            lastMessageText={lastMessage?.text}
           />
         );
       })}
@@ -77,7 +67,7 @@ const ActiveChats = () => {
 
 export default ActiveChats;
 
-function UserChat({ userInfo = {}, click, lastMessageText = "Lorem ipsum" }) {
+function UserChat({ userInfo = {}, click, lastMessageText = "No Messages!" }) {
   const { photoURL = fallbackImageURL, displayName = "Dummy" } = userInfo;
   return (
     <div className="userChat" onClick={click}>
@@ -88,4 +78,23 @@ function UserChat({ userInfo = {}, click, lastMessageText = "Lorem ipsum" }) {
       </div>
     </div>
   );
+}
+
+function sortAndTransformChats(chatData, sortType = "asc") {
+  const ChatDocsList = Object.entries(chatData);
+  // Restructure the results from a Map to an Object
+  const activeChats = ChatDocsList.map(([comboChatId, chatInfo]) => ({
+    ...chatInfo,
+    chatId: comboChatId,
+  }));
+
+  // Sort by date - descending (latest first)
+  activeChats.sort((a, b) => {
+    const fallbackA = a.date?.seconds;
+    const fallbackB = b.date?.seconds || 0;
+    if (sortType === "desc") return fallbackB - fallbackA; // a - b: asc, b -a: desc
+    if (sortType === "asc") return fallbackA - fallbackB; // a - b: asc, b -a: desc
+    return 0;
+  });
+  return activeChats; //Now Sorted!
 }

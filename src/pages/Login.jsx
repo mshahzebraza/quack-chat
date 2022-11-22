@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Forms.scss";
-import { authUserAtom, logInUser } from "../../firebase/auth";
+import { logInUser } from "../../firebase/auth";
+import { activeChatUserAtom, authUserAtom } from "../App";
 import { useAtom } from "jotai";
 
 const Login = () => {
   const navigate = useNavigate();
   const [err, setErr] = useState(false);
   const [authUser, setAuthUser] = useAtom(authUserAtom);
+  const [_, setActiveChatUserAtom] = useAtom(activeChatUserAtom);
+  setActiveChatUserAtom(null);
 
   useEffect(() => {
     if (!!authUser?.displayName) {
@@ -23,7 +26,6 @@ const Login = () => {
       await logInUser(email, password);
       navigate("/");
     } catch (error) {
-      console.log(error.message);
       setErr(error.message);
     }
   };
@@ -36,12 +38,11 @@ const Login = () => {
           <input type="email" placeholder="email" />
           <input type="password" placeholder="password" />
           <button type="submit">Sign in</button>
-          <span>{err ? err : " "}</span>
+          {err && <span className="formError">{err}</span>}
         </form>
         <p>
           You don't have an account? <Link to="/register">Register</Link>
         </p>
-        <Link to="/">Home</Link>
       </div>
     </div>
   );

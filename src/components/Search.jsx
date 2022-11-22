@@ -16,13 +16,15 @@ import fallbackImageURL from "../assets/shahzeb.jpg";
 import "../styles/Search.scss";
 import "../styles/UserChat.scss";
 import { firebaseFireStoreDB } from "../../firebase";
-import { authUserAtom } from "../../firebase/auth";
+import { activeChatUserAtom, authUserAtom } from "../App";
+import { createChatId } from "../lib/helpers";
 
 const Search = () => {
   const [searchUserName, setSearchUsername] = useState("");
   const [usersMatched, setUsersMatched] = useState([]);
   const [err, setErr] = useState(false);
   const [authUser] = useAtom(authUserAtom);
+  const [_, setActiveChatUserAtom] = useAtom(activeChatUserAtom);
 
   // search the users collection against the document with matching username
   const handleSearch = async (e) => {
@@ -45,6 +47,7 @@ const Search = () => {
         const filteredUsers = matchingUsers.filter(
           (user) => user.uid !== authUser.uid
         );
+
         setUsersMatched(filteredUsers);
       } else {
         setErr("No user found!");
@@ -63,7 +66,7 @@ const Search = () => {
       uid: uidM,
       photoURL: photoM,
     } = usersMatched[matchIdx];
-    const comboId = uidA > uidM ? uidA + uidM : uidM + uidA;
+    const comboId = createChatId(uidA, uidM);
     try {
       // Step 1: Check if the ChatGroup exists
       const docSnap = await getDoc(doc(firebaseFireStoreDB, "chats", comboId));
@@ -73,7 +76,9 @@ const Search = () => {
       } else {
         console.log("Chat Group didn't exist! Creating ...");
         // Step 1-A: Create a combined chatGroup for both users in "chat" collection
-        await setDoc(doc(firebaseFireStoreDB, "chats", comboId), {});
+        await setDoc(doc(firebaseFireStoreDB, "chats", comboId), {
+          messages: [],
+        });
         console.log("Chat Group Created");
 
         // Step 1-B: Update sender userChats for the receiver
@@ -100,6 +105,7 @@ const Search = () => {
       }
       // Step 2: Reset the search bar again
       setUsersMatched(null);
+      setActiveChatUserAtom(usersMatched[matchIdx]);
     } catch (error) {
       console.error(error);
       setErr("Error while selecting the searched user!");
@@ -109,15 +115,13 @@ const Search = () => {
   // Trigger an api request if "Enter" key is pressed
   const handleKey = (e) => {
     if (!searchUserName && !!usersMatched) {
-      console.log("Reset the search Result!");
-      setUsersMatched(null);
+      setUsersMatched(null); // reset the search bar
     }
     if (["Enter", "NumpadEnter"].includes(e.code)) {
       handleSearch();
       setSearchUsername("");
       return null;
     }
-    // search for user
   };
 
   return (

@@ -1,12 +1,10 @@
 import { doc, setDoc } from "firebase/firestore";
 import { firebaseFireStoreDB } from "./";
-import { atom } from "jotai";
 
 /**
  * Contains uid, displayName, photoURL
  * @param  {Object} null
  */
-export const activeChatUserAtom = atom(null);
 
 export const createUserDoc = async (userData) => {
   const { uid, displayName, email, photoURL } = userData;
