@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAtom } from "jotai";
 
 import AddAvatarImageURL from "../assets/addAvatar.png";
 import "../styles/Forms.scss";
@@ -7,10 +8,14 @@ import "../styles/Forms.scss";
 import { registerFirebaseUser, updateUserProfile } from "../../firebase/auth";
 import { uploadResumableData } from "../../firebase/storage";
 import { createUserChatDoc, createUserDoc } from "../../firebase/firestore";
+import { activeChatUserAtom } from "../App";
 
 const Register = () => {
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [_, setActiveChatUserAtom] = useAtom(activeChatUserAtom);
+  setActiveChatUserAtom(null);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {

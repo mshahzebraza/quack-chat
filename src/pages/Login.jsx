@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Forms.scss";
 import { logInUser } from "../../firebase/auth";
-import { authUserAtom } from "../App";
+import { activeChatUserAtom, authUserAtom } from "../App";
 import { useAtom } from "jotai";
 
 const Login = () => {
   const navigate = useNavigate();
   const [err, setErr] = useState(false);
   const [authUser, setAuthUser] = useAtom(authUserAtom);
+  const [_, setActiveChatUserAtom] = useAtom(activeChatUserAtom);
+  setActiveChatUserAtom(null);
 
   useEffect(() => {
     if (!!authUser?.displayName) {
