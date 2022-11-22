@@ -24,19 +24,7 @@ const ActiveChats = () => {
       doc(firebaseFireStoreDB, "userChats", authUser.uid),
       (doc) => {
         if (doc.exists()) {
-          const ChatDocsList = Object.entries(doc.data());
-          // Restructure the results from a Map to an Object
-          const activeChats = ChatDocsList.map(([comboChatId, chatInfo]) => ({
-            ...chatInfo,
-            chatId: comboChatId,
-          }));
-
-          // Sort by date - descending (latest first)
-          const activeChatsSorted = activeChats.sort((a, b) => {
-            const fallbackA = a.date?.seconds;
-            const fallbackB = b.date?.seconds || 0;
-            return fallbackB - fallbackA; // a - b: asc, b -a: desc
-          });
+          const activeChatsSorted = sortAndTransformChats(doc.data());
           setChats(activeChatsSorted);
         } else {
           console.error("No Active Chats Document Exists");
@@ -94,4 +82,23 @@ function UserChat({ userInfo = {}, click, lastMessageText = "No Messages!" }) {
       </div>
     </div>
   );
+}
+
+function sortAndTransformChats(chatData, sortType = "asc") {
+  const ChatDocsList = Object.entries(chatData);
+  // Restructure the results from a Map to an Object
+  const activeChats = ChatDocsList.map(([comboChatId, chatInfo]) => ({
+    ...chatInfo,
+    chatId: comboChatId,
+  }));
+
+  // Sort by date - descending (latest first)
+  activeChats.sort((a, b) => {
+    const fallbackA = a.date?.seconds;
+    const fallbackB = b.date?.seconds || 0;
+    if (sortType === "desc") return fallbackB - fallbackA; // a - b: asc, b -a: desc
+    if (sortType === "asc") return fallbackA - fallbackB; // a - b: asc, b -a: desc
+    return 0;
+  });
+  return activeChats; //Now Sorted!
 }
