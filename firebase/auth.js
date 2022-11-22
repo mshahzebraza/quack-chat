@@ -54,7 +54,6 @@ export const registerFirebaseUser = async (
  */
 export const updateUserProfile = async (afterCompletionParams) => {
   const { registeredUser, userName, downloadURL } = afterCompletionParams;
-  console.log("afterCompletionParams: ", afterCompletionParams);
   try {
     await updateProfile(registeredUser, {
       displayName: userName,

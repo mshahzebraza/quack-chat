@@ -16,10 +16,6 @@ const Message = ({ message }) => {
   const senderImage = getSenderImage(senderId, authUser, activeChatUser);
 
   const isOwner = senderId === authUser.uid; // generates a random boolean
-  console.log(" ");
-  console.log("authUserId: ", authUser.uid);
-  console.log("activeChatUserId: ", activeChatUser.uid);
-  console.log("senderId: ", senderId);
 
   return (
     <div className={`message ${isOwner && "owner"}`}>

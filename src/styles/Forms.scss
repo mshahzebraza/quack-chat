@@ -13,7 +13,13 @@
     flex-direction: column;
     gap: 10px;
     align-items: center;
+    width: 22.5rem;
 
+    .formError {
+      color: red;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
     .logo {
       color: #5d5b8d;
       font-weight: bold;

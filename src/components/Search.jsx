@@ -16,7 +16,7 @@ import fallbackImageURL from "../assets/shahzeb.jpg";
 import "../styles/Search.scss";
 import "../styles/UserChat.scss";
 import { firebaseFireStoreDB } from "../../firebase";
-import { authUserAtom } from "../App";
+import { activeChatUserAtom, authUserAtom } from "../App";
 import { createChatId } from "../lib/helpers";
 
 const Search = () => {
@@ -24,6 +24,7 @@ const Search = () => {
   const [usersMatched, setUsersMatched] = useState([]);
   const [err, setErr] = useState(false);
   const [authUser] = useAtom(authUserAtom);
+  const [_, setActiveChatUserAtom] = useAtom(activeChatUserAtom);
 
   // search the users collection against the document with matching username
   const handleSearch = async (e) => {
@@ -104,6 +105,7 @@ const Search = () => {
       }
       // Step 2: Reset the search bar again
       setUsersMatched(null);
+      setActiveChatUserAtom(usersMatched[matchIdx]);
     } catch (error) {
       console.error(error);
       setErr("Error while selecting the searched user!");
@@ -113,15 +115,13 @@ const Search = () => {
   // Trigger an api request if "Enter" key is pressed
   const handleKey = (e) => {
     if (!searchUserName && !!usersMatched) {
-      console.log("Reset the search Result!");
-      setUsersMatched(null);
+      setUsersMatched(null); // reset the search bar
     }
     if (["Enter", "NumpadEnter"].includes(e.code)) {
       handleSearch();
       setSearchUsername("");
       return null;
     }
-    // search for user
   };
 
   return (

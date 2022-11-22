@@ -32,10 +32,7 @@ const ActiveChats = () => {
       }
     );
 
-    return () => {
-      console.log("Cleanup for Active Chats");
-      return unsub();
-    };
+    return () => unsub();
   }
 
   useEffect(() => {
@@ -48,7 +45,6 @@ const ActiveChats = () => {
    */
   const handleSelect = (selectedUserInfo) => {
     // Change the Active Chat User
-    console.log("Selected Active Chat User: ", selectedUserInfo.displayName);
     setActiveChatUser(selectedUserInfo);
   };
 

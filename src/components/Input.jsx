@@ -99,8 +99,6 @@ const Input = () => {
       console.error(error);
       throw new Error("Error Sending the message");
     }
-
-    console.log("Send Button Clicked", { text, img });
   };
 
   return (

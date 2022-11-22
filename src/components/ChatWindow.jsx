@@ -10,6 +10,7 @@ import { activeChatUserAtom } from "../App";
 
 const ChatWindow = () => {
   const [activeChatUser] = useAtom(activeChatUserAtom);
+
   return (
     <div className="chatWindow">
       {activeChatUser ? (

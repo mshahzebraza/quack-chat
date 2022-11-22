@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children }) => {
   const [authUser] = useAtom(authUserAtom);
   if (!authUser) {
     console.log(
-      `🛑🤚🛑 Protected routes can only be visited by Authenticated Users!`
+      "🛑🤚🛑 Protected routes can only be visited by Authenticated Users!"
     );
     return <Navigate to="/login" />;
   }
@@ -39,6 +39,7 @@ function App() {
     });
     return () => unsub();
   }, []);
+
   return (
     <BrowserRouter>
       <Routes>

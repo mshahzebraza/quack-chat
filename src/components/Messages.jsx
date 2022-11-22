@@ -29,10 +29,7 @@ const Messages = () => {
       }
     );
 
-    return () => {
-      console.log("Cleanup for Chat Messages");
-      return unsub();
-    };
+    return () => unsub();
   }
 
   // Run the fetchChats as soon as selectedUser Changes
