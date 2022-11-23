@@ -1,15 +1,15 @@
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useAtom } from "jotai";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Error from "./pages/Error";
-
 import { firebaseAuth } from "../firebase";
 import { atom } from "jotai";
+
+const Home = lazy(() => import("./pages/Home"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const Error = lazy(() => import("./pages/Error"));
 
 export const activeChatUserAtom = atom(null);
 export const authUserAtom = atom(false);
@@ -42,25 +42,27 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" errorElement={<Error />}>
-          {/* Index Route */}
-          <Route
-            index
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
-          {/* Login Route */}
-          <Route path="login" element={<Login />} />
-          {/* Register Route */}
-          <Route path="register" element={<Register />} />
-          {/* Error Route */}
-          <Route path="*" element={<Error />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<div>Suspense Loading...</div>}>
+        <Routes>
+          <Route path="/" errorElement={<Error />}>
+            {/* Index Route */}
+            <Route
+              index
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            {/* Login Route */}
+            <Route path="login" element={<Login />} />
+            {/* Register Route */}
+            <Route path="register" element={<Register />} />
+            {/* Error Route */}
+            <Route path="*" element={<Error />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
