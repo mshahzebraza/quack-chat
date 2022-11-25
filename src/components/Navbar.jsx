@@ -11,7 +11,7 @@ const Navbar = () => {
   const [authUser] = useAtom(authUserAtom);
   return (
     <div className="navbar">
-      <span className="logo">React Chat App</span>
+      <span className="logo">QuackChat</span>
       <div className="user">
         <img src={authUser?.photoURL || fallbackImageURL} alt="User's Image" />
         <span>{authUser.displayName || "unauthorized"}</span>
