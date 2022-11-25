@@ -59,7 +59,7 @@ function App() {
             {/* Register Route */}
             <Route path="register" element={<Register />} />
             {/* Error Route */}
-            <Route path="error" element={<Error />} />
+            <Route path="xx" element={<Error />} />
           </Route>
           {/* Catch All Route */}
           <Route path="*" element={<Error />} />
