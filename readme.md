@@ -2,6 +2,8 @@
 
 # Quack-Chat 🐤💬
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a141ace2-9953-4baf-abde-f3dc6b0fe01b/deploy-status)](https://app.netlify.com/sites/quackchat/deploys)
+
 A Chat App 💬 based on React ⚛ & Firebase 🔥.
 User can create an account, search for another user and start chatting with him directly (in realtime).
 
