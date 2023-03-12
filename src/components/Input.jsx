@@ -113,6 +113,7 @@ const Input = () => {
         <img src={AttachImageURL} alt="" />
         <input
           type="file"
+          accept="image/*"
           style={{ display: "none" }}
           id="file"
           onChange={(e) => setImg(e.target.files[0])}
