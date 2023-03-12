@@ -1,11 +1,13 @@
+@import "./partials/colors";
+
 .chatHeader {
   height: 4rem;
-  background-color: #5d5b8d;
+  background-color: $windowHeaderColor;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  color: lightgray;
+  color: $baseColor;
 }
 
 .chatIcons {

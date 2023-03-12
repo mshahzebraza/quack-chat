@@ -21,83 +21,109 @@ import { createChatId } from "../lib/helpers";
 const Input = () => {
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
   const [authUser] = useAtom(authUserAtom);
   const [activeChatUser] = useAtom(activeChatUserAtom);
   const chatId = createChatId(authUser.uid, activeChatUser.uid);
 
   const handleSend = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
 
     try {
-      if (img) {
-        const storageRef = ref(firebaseStorage, `messages/${chatId}/${uuid()}`); // creating a random name for the image
+      const promises = [];
 
+      if (img) {
+        const storageRef = ref(firebaseStorage, `messages/${chatId}/${uuid()}`);
         // Upload the image
         const uploadTask = uploadBytesResumable(storageRef, img);
 
-        // Register three observers:
-        // 1. 'state_changed' observer, called any time the state changes
-        // 2. Error observer, called on failure
-        // 3. Completion observer, called on successful completion
-        uploadTask.on(
-          "state_changed",
+        // ? 1A. Create a new promise for uploading the image, and embed the upload path in a new chat message
+        promises.push(
+          new Promise((resolve, reject) => {
+            uploadTask.on(
+              "state_changed",
+              // Progress observer function
+              whileInProgress,
+              // Error observer function
+              reject,
+              // Completion observer function
+              async () => {
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                console.log("✅ Image File uploaded at: ", downloadURL);
 
-          whileInProgress,
-          onError,
-          async () => {
-            // Handle successful uploads on complete
-            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            console.log("✅ Image File uploaded at: ", downloadURL);
-            // Upload the message in ChatGroup
-            await updateDoc(doc(firebaseFireStoreDB, "chats", chatId), {
-              messages: arrayUnion({
-                id: uuid(),
-                text,
-                uid: authUser.uid,
-                date: Timestamp.now(),
-                img: downloadURL,
-              }),
-            });
-            console.log("Updated the message with image");
-          }
+                try {
+                  // Update the Firestore document with the new message object
+                  await updateDoc(doc(firebaseFireStoreDB, "chats", chatId), {
+                    messages: arrayUnion({
+                      id: uuid(),
+                      text,
+                      uid: authUser.uid,
+                      date: Timestamp.now(),
+                      img: downloadURL,
+                    }),
+                  });
+
+                  console.log("Updated the message with image");
+                  resolve(); // Resolve the promise if the update is successful
+                } catch (error) {
+                  reject(error); // Reject the promise if there is an error during the update
+                }
+              }
+            );
+          })
         );
       } else if (!img) {
-        // Upload the message in ChatGroup without image
-        await updateDoc(doc(firebaseFireStoreDB, "chats", chatId), {
-          messages: arrayUnion({
-            id: uuid(),
-            text,
-            uid: authUser.uid,
-            date: Timestamp.now(),
-          }),
-        });
+        promises.push(
+          updateDoc(doc(firebaseFireStoreDB, "chats", chatId), {
+            messages: arrayUnion({
+              id: uuid(),
+              text,
+              uid: authUser.uid,
+              date: Timestamp.now(),
+            }),
+          })
+        );
         console.log("Updated the message");
       }
 
-      // update the last message of user chats for receiver (check for receiver)
-      await updateDoc(
-        doc(firebaseFireStoreDB, "userChats", activeChatUser.uid),
-        {
+      promises.push(
+        // ? 1.B Create a regular chat message in the "userChat" collection 
+        updateDoc(doc(firebaseFireStoreDB, "userChats", activeChatUser.uid), {
           [chatId + ".lastMessage"]: {
             text,
           },
           [chatId + ".date"]: serverTimestamp(),
-        }
-      );
-      // update the last message of user chats for sender
-      await updateDoc(doc(firebaseFireStoreDB, "userChats", authUser.uid), {
-        [chatId + ".lastMessage"]: {
-          text,
-        },
-        [chatId + ".date"]: serverTimestamp(),
-      });
+        }),
 
-      setImg(null);
-      setText("");
+        updateDoc(doc(firebaseFireStoreDB, "userChats", authUser.uid), {
+          [chatId + ".lastMessage"]: {
+            text,
+          },
+          [chatId + ".date"]: serverTimestamp(),
+        })
+      );
+
+      // Execute all promises concurrently and wait for all of them to settle
+      const results = await Promise.allSettled(promises);
+
+      // Check the results of each promise
+      results.forEach((result) => {
+        if (result.status === "fulfilled") {
+          console.log("Promise fulfilled without values:", result.value);
+        } else {
+          console.error("Promise rejected with reason:", result.reason);
+        }
+      });
+      setIsLoading(false)
+      setText("")
+      setImg(null)
+
     } catch (error) {
       console.error(error);
       throw new Error("Error Sending the message");
+      setIsLoading(false)
+
     }
   };
 
@@ -110,9 +136,10 @@ const Input = () => {
         value={text}
       />
       <div className="send">
-        <img src={AttachImageURL} alt="" />
+        {/* <img src={AttachImageURL} alt="" /> */}
         <input
           type="file"
+          accept="image/*"
           style={{ display: "none" }}
           id="file"
           onChange={(e) => setImg(e.target.files[0])}
@@ -120,7 +147,7 @@ const Input = () => {
         <label htmlFor="file">
           <img src={ImgImageURL} alt="" />
         </label>
-        <button>Send</button>
+        <button>{isLoading ? "Loading..." : "Send"}</button>
       </div>
     </form>
   );

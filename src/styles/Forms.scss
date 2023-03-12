@@ -1,12 +1,13 @@
+@import "./partials/colors";
 .formContainer {
-  background-color: #a7bcff;
+  background-color: $baseColor2;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 
   .formWrapper {
-    background-color: white;
+    background-color: $formWrapperBg;
     padding: 20px 60px;
     border-radius: 10px;
     display: flex;
@@ -16,18 +17,18 @@
     width: 22.5rem;
 
     .formError {
-      color: red;
+      color: $formError;
       font-size: 0.7rem;
       font-weight: 500;
     }
     .logo {
-      color: #5d5b8d;
+      color: $windowHeaderColor;
       font-weight: bold;
       font-size: 24px;
     }
 
     .title {
-      color: #5d5b8d;
+      color: $windowHeaderColor;
       font-size: 12px;
     }
 
@@ -40,14 +41,14 @@
         padding: 15px;
         border: none;
         width: 250px;
-        border-bottom: 1px solid #a7bcff;
+        border-bottom: 1px solid $baseColor2;
         &::placeholder {
-          color: rgb(175, 175, 175);
+          color: $baseColor2;
         }
       }
 
       button {
-        background-color: #7b96ec;
+        background-color: $baseColor2;
         color: white;
         padding: 10px;
         font-weight: bold;
@@ -59,7 +60,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        color: #8da4f1;
+        color: $baseColor2;
         font-size: 12px;
         cursor: pointer;
 
@@ -69,7 +70,7 @@
       }
     }
     p {
-      color: #5d5b8d;
+      color: $baseColor2;
       font-size: 12px;
       margin-top: 10px;
     }
