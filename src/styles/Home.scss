@@ -1,14 +1,15 @@
-@import "./partials/mixins";
+@import "src/styles/partials/mixins";
+@import "src/styles/partials/colors";
 
 .home {
-  background-color: #a7bcff;
+  background-color: $baseColor;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 
   .container {
-    border: 1px solid white;
+    border: 1px solid $white;
     border-radius: 10px;
     width: 65%;
     height: 80%;

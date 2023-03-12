@@ -1,6 +1,8 @@
+@import "./partials/colors";
+
 .blankWindow {
   flex: 1;
-  background-color: #ddddf7;
+  background-color: $baseColor;
   padding: 10px;
   height: calc(100% - 160px);
   overflow: scroll;
