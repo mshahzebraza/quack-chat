@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAtom } from "jotai";
 import { doc, onSnapshot } from "firebase/firestore";
 import { createChatId } from "../lib/helpers";
@@ -12,6 +12,18 @@ const Messages = () => {
   const [messages, setMessages] = useState([]);
   const [authUser] = useAtom(authUserAtom);
   const [activeChatUser] = useAtom(activeChatUserAtom);
+  const chatContainerRef = useRef(null);
+
+  // Function to scroll to the bottom of the container
+  const scrollToBottom = () => {
+    const container = chatContainerRef.current;
+    container.scrollTop = container.scrollHeight;
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
 
   const chatId = createChatId(activeChatUser?.uid, authUser?.uid);
 
@@ -39,7 +51,7 @@ const Messages = () => {
   }, [activeChatUser.uid]);
 
   return (
-    <div className="messages">
+    <div className="messages" ref={chatContainerRef} >
       {messages.map((m = {}, idx) => (
         <Message message={m} key={m?.id || idx} />
       ))}

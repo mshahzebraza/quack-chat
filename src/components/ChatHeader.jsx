@@ -12,9 +12,9 @@ const ChatHeader = ({ activeChatUserName = "No User" }) => {
     <div className="chatHeader">
       <span>{activeChatUserName}</span>
       <div className="chatIcons">
-        <img src={CamImageURL} alt="Camera Image" />
+        {/* <img src={CamImageURL} alt="Camera Image" />
         <img src={AddImageURL} alt="Add Image" />
-        <img src={MoreImageURL} alt="More Image" />
+        <img src={MoreImageURL} alt="More Image" /> */}
       </div>
     </div>
   );
