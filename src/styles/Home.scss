@@ -2,14 +2,15 @@
 @import "src/styles/partials/colors";
 
 .home {
-  background-color: $baseColor;
+  background-color: #586abb;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 
   .container {
-    border: 1px solid $white;
+    box-shadow: 0rem 1rem 5rem 0 #3c3c3c3c;
+    border: 2px solid white;
     border-radius: 10px;
     width: 65%;
     height: 80%;
