@@ -18,6 +18,7 @@
 
   .user {
     display: flex;
+    text-transform: capitalize;
     gap: 10px;
     justify-content: space-between;
     align-items: center;
@@ -32,9 +33,10 @@
 
     button {
       margin-left: auto;
+      border-radius: 0.25rem;
       background-color: #5d5b8d;
       padding: 0.5rem 1rem;
-      color: #ddddf7;
+      color: #2f2d52;
       text-transform: uppercase;
       font-weight: 600;
       font-size: 12px;

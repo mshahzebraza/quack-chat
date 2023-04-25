@@ -67,7 +67,15 @@ const Login = () => {
           {err && <span className="formError">{err}</span>}
         </form>
         <p>
-          You don't have an account? <Link to="/register">Register</Link>
+          You don't have an account? <Link to="/register"
+            style={{
+              background: "#333",
+              padding: "4px 8px",
+              color: "white",
+              textDecoration: "none",
+              borderRadius: "10px",
+            }}
+          >Register</Link>
         </p>
       </div>
     </div>

@@ -34,7 +34,7 @@ function BlankChat() {
 
   return (
     <div className="blankWindow">
-      <h1>{authUser.displayName}</h1>
+      <h1>Welcome, {authUser.displayName} 👋</h1>
       <h2>Choose a Chat to start conversation!</h2>
     </div>
   );

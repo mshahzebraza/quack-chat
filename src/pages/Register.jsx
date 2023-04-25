@@ -13,6 +13,7 @@ import { activeChatUserAtom } from "../App";
 const Register = () => {
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fileName, setFileName] = useState("Add an avatar");
   const [_, setActiveChatUserAtom] = useAtom(activeChatUserAtom);
   setActiveChatUserAtom(null);
 
@@ -64,17 +65,26 @@ const Register = () => {
           <input required type="text" placeholder="display name" />
           <input required type="email" placeholder="email" />
           <input required type="password" placeholder="password" />
-          <input required style={{ display: "none" }} type="file" id="file" />
+          <input required style={{ display: "none" }} type="file" id="file" onChange={(e) => { console.log("e.files:", setFileName(e.target.files[0].name)) }} />
           <label htmlFor="file">
             <img src={AddAvatarImageURL} alt="" />
-            <span>Add an avatar</span>
+            <span>{fileName}</span>
           </label>
           <button disabled={loading}>Sign up</button>
           {loading && "Uploading and compressing the image please wait..."}
           {err && <span className="formError">{err}</span>}
         </form>
-        <p>
-          You do have an account? <Link to="/login">Login</Link>
+        <p  >
+          You do have an account? <Link to="/login"
+            style={{
+              background: "#333",
+              padding: "4px 8px",
+              color: "white",
+              textDecoration: "none",
+              borderRadius: "10px"
+            }}
+          >
+            Login</Link>
         </p>
       </div>
     </div>
