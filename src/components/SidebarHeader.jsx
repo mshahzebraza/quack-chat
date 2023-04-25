@@ -7,7 +7,7 @@ import { authUserAtom } from "../App";
 /**
  * The top
  */
-const Navbar = () => {
+const SidebarHeader = () => {
   const [authUser] = useAtom(authUserAtom);
   return (
     <div className="navbar">
@@ -21,4 +21,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default SidebarHeader;

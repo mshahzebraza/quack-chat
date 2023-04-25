@@ -1,6 +1,6 @@
 import React from "react";
 
-import Navbar from "./Navbar";
+import SidebarHeader from "./SidebarHeader";
 import Search from "./Search";
 import ActiveChats from "./ActiveChats";
 import "../styles/Sidebar.scss";
@@ -8,7 +8,7 @@ import "../styles/Sidebar.scss";
 const Sidebar = () => {
   return (
     <div className="sidebar">
-      <Navbar />
+      <SidebarHeader />
       <Search />
       <ActiveChats />
     </div>

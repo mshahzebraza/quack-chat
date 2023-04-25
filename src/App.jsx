@@ -27,7 +27,6 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   const [authUser, setAuthUser] = useAtom(authUserAtom);
-  // const [authUser, setAuthUser] = useAtom(authUserAtom);
 
   // Sets up an auth-observer as soon as app mounts to track the auth-state in realtime
   useEffect(() => {
